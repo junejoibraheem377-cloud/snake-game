@@ -241,11 +241,6 @@ function tick() {
   updateLeaderboard();
 }
 
-function lighten(hex) {
-  const c = { '#ef4444': '#fca5a5', '#facc15': '#fde68a', '#ec4899': '#f9a8d4' };
-  return c[hex] || '#ffffff';
-}
-
 function shadeDark(hex) {
   return hex + '99';
 }
@@ -399,4 +394,3 @@ startBtn.addEventListener('click', function () {
   overlayText.textContent = 'Finger se drag karke direction do — 19 bots se bachte hue bado!';
   initGame();
 });
-  
