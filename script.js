@@ -251,26 +251,13 @@ function shadeDark(hex) {
 }
 
 function drawFood(f, sx, sy) {
-  const r = f.type.r;
   ctx.save();
-  ctx.shadowColor = f.type.color;
-  ctx.shadowBlur = 8;
-
-  const grad = ctx.createRadialGradient(sx - r / 3, sy - r / 3, 1, sx, sy, r);
-  grad.addColorStop(0, lighten(f.type.color));
-  grad.addColorStop(1, f.type.color);
-
-  ctx.beginPath();
-  ctx.arc(sx, sy, r, 0, Math.PI * 2);
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  ctx.shadowBlur = 0;
-  ctx.beginPath();
-  ctx.arc(sx - r / 3, sy - r / 3, r / 3.5, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  ctx.fill();
-
+  ctx.shadowColor = 'rgba(255, 220, 100, 0.8)';
+  ctx.shadowBlur = 12;
+  ctx.font = (f.type.r * 2) + 'px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(f.type.emoji, sx, sy);
   ctx.restore();
 }
 
