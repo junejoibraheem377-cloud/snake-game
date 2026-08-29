@@ -18,10 +18,16 @@ const TURN_RATE = 0.08;
 const TICK_MS = 30;
 
 const FRUIT_TYPES = [
-  { color: '#ef4444', points: 1, r: 5 },
-  { color: '#facc15', points: 3, r: 7 },
-  { color: '#ec4899', points: 5, r: 9 }
+  { emoji: '🍓', points: 1, r: 14 },
+  { emoji: '🍞', points: 2, r: 16 },
+  { emoji: '🌭', points: 3, r: 16 },
+  { emoji: '🍩', points: 3, r: 15 },
+  { emoji: '🍒', points: 5, r: 14 },
+  { emoji: '🍇', points: 5, r: 15 },
+  { emoji: '🥐', points: 2, r: 15 },
+  { emoji: '🍔', points: 4, r: 16 }
 ];
+
 const SNAKE_COLORS = ['#38bdf8','#fb923c','#a78bfa','#f472b6','#34d399','#f87171','#fbbf24','#60a5fa','#c084fc','#4ade80'];
 
 let snakes = [];
