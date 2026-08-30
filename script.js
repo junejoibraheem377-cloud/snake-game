@@ -33,6 +33,52 @@ const FRUIT_TYPES = [
 
 const SNAKE_COLORS = ['#38bdf8','#fb923c','#a78bfa','#f472b6','#34d399','#f87171','#fbbf24','#60a5fa','#c084fc','#4ade80'];
 
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playTone(freq, duration, type, startGain) {
+  try {
+    const ctxA = getAudioCtx();
+    const osc = ctxA.createOscillator();
+    const gain = ctxA.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, ctxA.currentTime);
+    gain.gain.setValueAtTime(startGain || 0.15, ctxA.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctxA.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctxA.destination);
+    osc.start();
+    osc.stop(ctxA.currentTime + duration);
+  } catch (e) {
+    // audio not available, ignore
+  }
+}
+
+function playEatSound() {
+  playTone(700, 0.09, 'triangle', 0.12);
+  setTimeout(function () { playTone(950, 0.08, 'triangle', 0.09); }, 40);
+}
+
+function playBoostSound() {
+  playTone(300, 0.15, 'sawtooth', 0.05);
+}
+
+function playGameOverSound() {
+  playTone(300, 0.25, 'sawtooth', 0.15);
+  setTimeout(function () { playTone(220, 0.25, 'sawtooth', 0.13); }, 150);
+  setTimeout(function () { playTone(140, 0.4, 'sawtooth', 0.12); }, 300);
+}
+
 let snakes = [];
 let foods = [];
 let pointer = { x: 0, y: 0, active: false };
@@ -63,7 +109,8 @@ function createSnake(x, y, color, isPlayer) {
     color: color,
     isPlayer: isPlayer,
     alive: true,
-    botTurnTimer: 0
+    botTurnTimer: 0,
+    wasBoosting: false
   };
 }
 
@@ -95,7 +142,7 @@ function initGame() {
   running = true;
   gameState = 'playing';
 
-  const player = createSnake(WORLD_W / 2, WORLD_H / 2, '#4ade80', true);
+  const player = createSnake(WORLD_W / 2, WORLD_H / 2, '#ffffff', true);
   snakes.push(player);
 
   for (let i = 0; i < BOT_COUNT; i++) {
@@ -152,6 +199,12 @@ function moveSnake(snake) {
       const dy = pointer.y - canvas.height / 2;
       snake.targetAngle = Math.atan2(dy, dx);
       currentSpeed = SPEED * BOOST_MULTIPLIER;
+      if (!snake.wasBoosting) {
+        playBoostSound();
+      }
+      snake.wasBoosting = true;
+    } else {
+      snake.wasBoosting = false;
     }
   } else {
     snake.botTurnTimer -= 1;
@@ -194,6 +247,7 @@ function checkFoodCollision(snake) {
       spawnFood();
       if (snake.isPlayer) {
         scoreEl.textContent = String(snake.score);
+        playEatSound();
       }
     }
   }
@@ -380,6 +434,7 @@ function endGame() {
   const player = getPlayer();
   const finalScore = player ? player.score : 0;
   pauseBtn.style.display = 'none';
+  playGameOverSound();
   showOverlay('Game Over!', 'Score: ' + finalScore, 'Play', false, 'Play Again');
 }
 
