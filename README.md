@@ -13,16 +13,10 @@ Snake Arena reimagines the classic Snake game with a Slither.io-inspired experie
 📱 Fully Responsive — Automatically adapts to any mobile or desktop screen size.
 🎨 Polished Visual Design — Smooth gradients, glowing effects, and an expressive snake design with directional eyes.
 🛠️ Built With
-Technology
-Purpose
-HTML5
-Page structure and canvas rendering surface
-CSS
-Responsive layout, UI styling, and animations
-JavaScript
-Game engine, physics, AI behavior, and rendering logic
-Canvas API
-Real-time 2D rendering of the game world
+HTML5 — Page structure and canvas rendering surface
+CSS3 — Responsive layout, UI styling, and animations
+JavaScript (ES6) — Game engine, physics, AI behavior, and rendering logic
+Canvas API — Real-time 2D rendering of the game world
 No external frameworks, libraries, or dependencies are used — the entire game runs on native web technologies.
 📁 Project Structure
 Code
@@ -43,14 +37,9 @@ Use the Pause button anytime to pause, resume, or restart the game
 Climb the leaderboard and outlast the competition!
 🎓 Academic Project Information
 This project was developed as part of an academic learning exercise.
-Detail
-Information
-Developed by
-Ibrahim Junejo
-Instructor
-Ma'am Chandini Talpur
-Institute
-The Sufi Institute, Luwari Sharif, Badin
+Developed by: Ibrahim Junejo
+Instructor: Ma'am Chandini Talpur
+Institute: The Sufi Institute, Luwari Sharif, Badin
 📌 Future Enhancements
 Sound effects for eating, boosting, and game-over events
 A mini-map showing the full arena
