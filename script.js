@@ -1,4 +1,3 @@
-    
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const overlay = document.getElementById('overlay');
@@ -20,7 +19,6 @@ const MAX_RADIUS = 22;
 const TURN_RATE = 0.08;
 const TICK_MS = 30;
 const BOOST_MULTIPLIER = 2.2;
-const BOOST_COST_TICKS = 6;
 
 const FRUIT_TYPES = [
   { emoji: '🍓', points: 1, r: 14 },
@@ -65,8 +63,7 @@ function createSnake(x, y, color, isPlayer) {
     color: color,
     isPlayer: isPlayer,
     alive: true,
-    botTurnTimer: 0,
-    boostTick: 0
+    botTurnTimer: 0
   };
 }
 
@@ -154,23 +151,7 @@ function moveSnake(snake) {
       const dx = pointer.x - canvas.width / 2;
       const dy = pointer.y - canvas.height / 2;
       snake.targetAngle = Math.atan2(dy, dx);
-
-      if (segmentCount(snake) > 6) {
-        currentSpeed = SPEED * BOOST_MULTIPLIER;
-        snake.boostTick += 1;
-        if (snake.boostTick >= BOOST_COST_TICKS) {
-          snake.boostTick = 0;
-          if (snake.score > 0) {
-            snake.score -= 1;
-            scoreEl.textContent = String(snake.score);
-            const segs = getSegments(snake);
-            const tail = segs[segs.length - 1];
-            if (tail) {
-              foods.push({ x: tail.x, y: tail.y, type: FRUIT_TYPES[0] });
-            }
-          }
-        }
-      }
+      currentSpeed = SPEED * BOOST_MULTIPLIER;
     }
   } else {
     snake.botTurnTimer -= 1;
@@ -406,7 +387,7 @@ function pauseGame() {
   if (gameState !== 'playing') return;
   running = false;
   gameState = 'paused';
-  showOverlay('Paused', 'Game rukhi hui hai', 'Resume', true, 'Restart');
+  showOverlay('Paused', '', 'Resume', true, 'Restart');
 }
 
 function resumeGame() {
