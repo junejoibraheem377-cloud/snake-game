@@ -1,9 +1,12 @@
+    
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlayTitle');
 const overlayText = document.getElementById('overlayText');
 const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const pauseBtn = document.getElementById('pauseBtn');
 const scoreEl = document.getElementById('score');
 const aliveCountEl = document.getElementById('aliveCount');
 const leaderboardEl = document.getElementById('leaderboard');
@@ -16,6 +19,8 @@ const SEG_SPACING_TICKS = 3;
 const MAX_RADIUS = 22;
 const TURN_RATE = 0.08;
 const TICK_MS = 30;
+const BOOST_MULTIPLIER = 2.2;
+const BOOST_COST_TICKS = 6;
 
 const FRUIT_TYPES = [
   { emoji: '🍓', points: 1, r: 14 },
@@ -35,6 +40,7 @@ let foods = [];
 let pointer = { x: 0, y: 0, active: false };
 let running = false;
 let gameLoop = null;
+let gameState = 'menu';
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
@@ -59,7 +65,8 @@ function createSnake(x, y, color, isPlayer) {
     color: color,
     isPlayer: isPlayer,
     alive: true,
-    botTurnTimer: 0
+    botTurnTimer: 0,
+    boostTick: 0
   };
 }
 
@@ -89,6 +96,7 @@ function initGame() {
   snakes = [];
   foods = [];
   running = true;
+  gameState = 'playing';
 
   const player = createSnake(WORLD_W / 2, WORLD_H / 2, '#4ade80', true);
   snakes.push(player);
@@ -139,11 +147,30 @@ function angleDiff(a, b) {
 function moveSnake(snake) {
   if (!snake.alive) return;
 
+  let currentSpeed = SPEED;
+
   if (snake.isPlayer) {
     if (pointer.active) {
       const dx = pointer.x - canvas.width / 2;
       const dy = pointer.y - canvas.height / 2;
       snake.targetAngle = Math.atan2(dy, dx);
+
+      if (segmentCount(snake) > 6) {
+        currentSpeed = SPEED * BOOST_MULTIPLIER;
+        snake.boostTick += 1;
+        if (snake.boostTick >= BOOST_COST_TICKS) {
+          snake.boostTick = 0;
+          if (snake.score > 0) {
+            snake.score -= 1;
+            scoreEl.textContent = String(snake.score);
+            const segs = getSegments(snake);
+            const tail = segs[segs.length - 1];
+            if (tail) {
+              foods.push({ x: tail.x, y: tail.y, type: FRUIT_TYPES[0] });
+            }
+          }
+        }
+      }
     }
   } else {
     snake.botTurnTimer -= 1;
@@ -161,8 +188,8 @@ function moveSnake(snake) {
   const diff = angleDiff(snake.angle, snake.targetAngle);
   snake.angle += diff * TURN_RATE;
 
-  snake.x += Math.cos(snake.angle) * SPEED;
-  snake.y += Math.sin(snake.angle) * SPEED;
+  snake.x += Math.cos(snake.angle) * currentSpeed;
+  snake.y += Math.sin(snake.angle) * currentSpeed;
 
   snake.x = Math.max(10, Math.min(WORLD_W - 10, snake.x));
   snake.y = Math.max(10, Math.min(WORLD_H - 10, snake.y));
@@ -356,15 +383,36 @@ function updateLeaderboard() {
   leaderboardEl.innerHTML = html;
 }
 
+function showOverlay(title, text, startLabel, showStart, restartLabel) {
+  overlayTitle.textContent = title;
+  overlayText.textContent = text;
+  startBtn.textContent = startLabel;
+  startBtn.style.display = showStart ? 'inline-block' : 'none';
+  restartBtn.textContent = restartLabel;
+  overlay.style.display = 'flex';
+}
+
 function endGame() {
   running = false;
+  gameState = 'gameover';
   if (gameLoop) clearInterval(gameLoop);
   const player = getPlayer();
   const finalScore = player ? player.score : 0;
-  overlayTitle.textContent = 'Game Over!';
-  overlayText.textContent = 'Score: ' + finalScore;
-  startBtn.textContent = 'Play Again';
-  overlay.style.display = 'flex';
+  pauseBtn.style.display = 'none';
+  showOverlay('Game Over!', 'Score: ' + finalScore, 'Play', false, 'Play Again');
+}
+
+function pauseGame() {
+  if (gameState !== 'playing') return;
+  running = false;
+  gameState = 'paused';
+  showOverlay('Paused', 'Game rukhi hui hai', 'Resume', true, 'Restart');
+}
+
+function resumeGame() {
+  gameState = 'playing';
+  running = true;
+  overlay.style.display = 'none';
 }
 
 canvas.addEventListener('touchstart', function (e) {
@@ -388,9 +436,23 @@ canvas.addEventListener('mousemove', function (e) {
   pointer.y = e.clientY;
 });
 
+pauseBtn.addEventListener('click', function () {
+  pauseGame();
+});
+
 startBtn.addEventListener('click', function () {
+  if (gameState === 'paused') {
+    resumeGame();
+    pauseBtn.style.display = 'flex';
+  } else {
+    overlay.style.display = 'none';
+    pauseBtn.style.display = 'flex';
+    initGame();
+  }
+});
+
+restartBtn.addEventListener('click', function () {
   overlay.style.display = 'none';
-  overlayTitle.textContent = 'Snake Arena';
-  overlayText.textContent = 'Finger se drag karke direction do — 19 bots se bachte hue bado!';
+  pauseBtn.style.display = 'flex';
   initGame();
 });
