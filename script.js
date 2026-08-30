@@ -428,6 +428,7 @@ startBtn.addEventListener('click', function () {
   } else {
     overlay.style.display = 'none';
     pauseBtn.style.display = 'flex';
+    restartBtn.style.display = 'inline-block';
     initGame();
   }
 });
