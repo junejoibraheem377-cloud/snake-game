@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Snake Arena</title>
-  <meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#111111">
 <link rel="manifest" href="/snake-game/manifest.json">
+<link rel="stylesheet" href="style.css">
 <script>
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/snake-game/worker.js", { scope: "/snake-game/" });
+    navigator.serviceWorker.register("/snake-game/service-worker.js", { scope: "/snake-game/" });
   }
 </script>
-<link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="topBar">
@@ -37,8 +37,5 @@
   </div>
 
   <script src="script.js"></script>
-  <script>
-
-</script>
 </body>
 </html>
