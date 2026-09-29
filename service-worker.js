@@ -1,4 +1,4 @@
-const CACHE_NAME = "snake-game-v1";
+const CACHE_NAME = "snake-game-v3";
 
 const FILES = [
   "/snake-game/",
@@ -6,8 +6,9 @@ const FILES = [
   "/snake-game/style.css",
   "/snake-game/script.js",
   "/snake-game/manifest.json",
-  "/snake-game/icons/icon-192.png",
-  "/snake-game/icons/icon-512.png"
+  "/snake-game/snake-icon-192.png",
+  "/snake-game/snake-icon-512.png",
+  "/snake-game/snake-icon-maskable.png"
 ];
 
 self.addEventListener("install", (event) => {
