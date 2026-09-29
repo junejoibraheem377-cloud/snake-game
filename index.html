@@ -4,8 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Snake Arena</title>
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111111">
+  <meta name="theme-color" content="#111111">
+<link rel="manifest" href="/snake-game/manifest.json">
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/snake-game/worker.js", { scope: "/snake-game/" });
+  }
+</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,11 +38,7 @@
 
   <script src="script.js"></script>
   <script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker Registered"))
-        .catch((error) => console.log("Service Worker Error:", error));
-}
+
 </script>
 </body>
 </html>
