@@ -1,0 +1,11 @@
+{
+  "name": "Snake Game",
+  "short_name": "Snake",
+  "description": "Classic Snake Game",
+  "start_url": "/snake-game/",
+  "scope": "/snake-game/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#111111"
+}
